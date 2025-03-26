@@ -50,7 +50,7 @@ The **Hungarian Algorithm** is used for assigning detections to tracked objects 
 ### **Steps to Build and Run**
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repository-url.git
+   https://github.com/ksadabadi/TrafficFlowCounter-YOLOv10-TFLite.git   
    ```
 2. Open the project in **Android Studio**.
 3. Build and run the app on an **Android device**.
