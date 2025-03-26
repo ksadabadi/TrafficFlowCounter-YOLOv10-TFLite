@@ -1,7 +1,7 @@
-# Real-Time Object Counting App
+# Real-Time Traffic Counting App
 
 ## Overview
-This project is a **real-time object counting application** developed for traffic analysis. It detects, classifies, tracks, and counts vehicles and pedestrians crossing a predefined line in **four possible directions**:
+This project is a **real-time traffic counting application** developed for traffic analysis. It detects, classifies, tracks, and counts vehicles and pedestrians crossing a predefined line in **four possible directions**:
 - **Left to Right**
 - **Right to Left**
 - **Top to Bottom**
@@ -66,9 +66,12 @@ This project was developed by the **Center for Advanced Transportation Technolog
 **Kaveh Farokhi**
 📧 Email: kfarokhi@umd.edu
 
-### **Developed By:**
+### **Developer:**
 **Jeffy Lauren Raj**
 📧 Email: jeffy22@umd.edu
 
-### **CATT Link:**  
+### **Developed At:**  
 [Center for Advanced Transportation Technology (CATT)](https://catt.umd.edu/)
+
+[University of Maryland (UMD)](http://www.umd.edu)
+
