@@ -1,7 +1,7 @@
 # Real-Time Object Counting App
 
 ## Overview
-This project is a **real-time object counting application** developed for traffic analysis. It detects, classifies,tracks and counts vehicles and pedestrians crossing a predefined line in **four possible directions**:
+This project is a **real-time object counting application** developed for traffic analysis. It detects, classifies, tracks, and counts vehicles and pedestrians crossing a predefined line in **four possible directions**:
 - **Left to Right**
 - **Right to Left**
 - **Top to Bottom**
@@ -59,17 +59,15 @@ The **Hungarian Algorithm** is used for assigning detections to tracked objects 
 ## Project Details
 This project was developed by the **Center for Advanced Transportation Technology (CATT)**.
 
-### **Principal Investigator:**
+### **Principal Investigators:**
 **Rodrigo Moscoso**
 📧 Email: rmoscoso@umd.edu
+**Kaveh Farokhi**
+📧 Email: kfarokhi@umd.edu
 
 ### **Developed By:**
 **Jeffy Lauren Raj**
+📧 Email: jeffy22@umd.edu
 
 ### **CATT Link:**  
 [Center for Advanced Transportation Technology (CATT)](https://catt.umd.edu/)
-
-### **Contact**
-📧 Email: jeffy22@umd.edu
-
-
