@@ -9,5 +9,12 @@
         android:id="@+id/cameraFragment"
         android:name="com.example.yololitertobjectdetection.ui.CameraFragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" />
+        tools:layout="@layout/fragment_camera">
+
+        <!-- ✅ Added argument for direction -->
+        <argument
+            android:name="DIRECTION"
+            app:argType="string"
+            android:defaultValue="LEFT_TO_RIGHT" />
+    </fragment>
 </navigation>

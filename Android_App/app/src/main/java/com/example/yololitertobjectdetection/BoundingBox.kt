@@ -1,5 +1,5 @@
 package com.example.yololitertobjectdetection
-
+import android.graphics.Color
 data class BoundingBox(
     val x1: Float,
     val y1: Float,
@@ -7,5 +7,7 @@ data class BoundingBox(
     val y2: Float,
     val cnf: Float,
     val cls: Int,
-    val clsName: String
+    val clsName: String,
+    val id: Int? = null,
+    var color: Int = Color.WHITE
 )

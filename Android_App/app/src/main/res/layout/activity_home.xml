@@ -8,9 +8,7 @@
     android:background="@color/black"
     tools:context=".HomeActivity">
 
-    <!-- History Button -->
-
-    <!-- Count Objects Button -->
+    <!-- Title -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -21,10 +19,24 @@
         android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- About Button (Top-Right) -->
+    <Button
+        android:id="@+id/btnAbout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="About"
+        android:textSize="16sp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/white"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- History Button -->
     <ImageButton
         android:id="@+id/btnHistory"
         android:layout_width="200dp"
@@ -35,50 +47,65 @@
         android:padding="10dp"
         android:scaleType="fitCenter"
         android:src="@drawable/history_icon"
-        app:layout_constraintBottom_toTopOf="@id/btnCountObjects"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- History Text -->
     <TextView
         android:id="@+id/Text1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="352dp"
+        android:layout_marginTop="16dp"
         android:text="History"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btnHistory" />
+
+    <!-- Count Objects Button -->
     <ImageButton
         android:id="@+id/btnCountObjects"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="32dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Count Objects"
         android:padding="10dp"
         android:scaleType="fitCenter"
         android:src="@drawable/count_objects_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnHistory" />
+        app:layout_constraintTop_toBottomOf="@id/Text1" />
 
+    <!-- Count Objects Text -->
     <TextView
         android:id="@+id/Text2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="642dp"
+        android:layout_marginTop="16dp"
         android:text="Count Objects"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btnCountObjects" />
+
+    <!-- Copyright Footer -->
+    <TextView
+        android:id="@+id/txtCopyright"
+        android:layout_width="388dp"
+        android:layout_height="29dp"
+        android:layout_marginBottom="4dp"
+        android:text="© 2025 Centre of Advanced Transportion Technology(CATT)."
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.695"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

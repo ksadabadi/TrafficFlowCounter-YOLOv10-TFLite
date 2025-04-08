@@ -3,8 +3,10 @@ package com.example.yololitertobjectdetection
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock
+import android.util.Log
 import com.example.yololitertobjectdetection.MetaData.extractNamesFromLabelFile
 import com.example.yololitertobjectdetection.MetaData.extractNamesFromMetadata
+import com.example.yololitertobjectdetection.tracking.SortTracker
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.CompatibilityList
@@ -21,7 +23,9 @@ class Detector(
     private val modelPath: String,
     private val labelPath: String?,
     private val detectorListener: DetectorListener,
-    private val message: (String) -> Unit
+    private val message: (String) -> Unit,
+    private val tracker: SortTracker = SortTracker(),
+    private var selectedDirection: Direction // ✅ Stores the selected direction
 ) {
     private var interpreter: Interpreter
     private var labels = mutableListOf<String>()
@@ -36,8 +40,13 @@ class Detector(
         .add(CastOp(INPUT_IMAGE_TYPE))
         .build()
 
+    private val previousPositions = mutableMapOf<Int, Pair<Float, Float>>()
+    private var count = 0 // ✅ Only one count for the selected direction
+    private var isVertical = false
+    private var countingLinePosition = 0.5f
+
     init {
-        val options = Interpreter.Options().apply{
+        val options = Interpreter.Options().apply {
             this.setNumThreads(4)
         }
 
@@ -47,14 +56,12 @@ class Detector(
         labels.addAll(extractNamesFromMetadata(model))
         if (labels.isEmpty()) {
             if (labelPath == null) {
-                message("Model not contains metadata, provide LABELS_PATH in Constants.kt")
+                message("Model does not contain metadata, provide LABELS_PATH in Constants.kt")
                 labels.addAll(MetaData.TEMP_CLASSES)
             } else {
                 labels.addAll(extractNamesFromLabelFile(context, labelPath))
             }
         }
-
-        labels.forEach(::println)
 
         val inputShape = interpreter.getInputTensor(0)?.shape()
         val outputShape = interpreter.getOutputTensor(0)?.shape()
@@ -63,7 +70,6 @@ class Detector(
             tensorWidth = inputShape[1]
             tensorHeight = inputShape[2]
 
-            // If in case input shape is in format of [1, 3, ..., ...]
             if (inputShape[1] == 3) {
                 tensorWidth = inputShape[2]
                 tensorHeight = inputShape[3]
@@ -81,8 +87,8 @@ class Detector(
 
         val options = if (isGpu) {
             val compatList = CompatibilityList()
-            Interpreter.Options().apply{
-                if(compatList.isDelegateSupportedOnThisDevice){
+            Interpreter.Options().apply {
+                if (compatList.isDelegateSupportedOnThisDevice) {
                     val delegateOptions = compatList.bestOptionsForThisDevice
                     this.addDelegate(GpuDelegate(delegateOptions))
                 } else {
@@ -90,7 +96,7 @@ class Detector(
                 }
             }
         } else {
-            Interpreter.Options().apply{
+            Interpreter.Options().apply {
                 this.setNumThreads(4)
             }
         }
@@ -104,10 +110,7 @@ class Detector(
     }
 
     fun detect(frame: Bitmap) {
-        if (tensorWidth == 0
-            || tensorHeight == 0
-            || numChannel == 0
-            || numElements == 0) return
+        if (tensorWidth == 0 || tensorHeight == 0 || numChannel == 0 || numElements == 0) return
 
         var inferenceTime = SystemClock.uptimeMillis()
 
@@ -129,10 +132,48 @@ class Detector(
             return
         }
 
-        detectorListener.onDetect(bestBoxes, inferenceTime)
+        bestBoxes.forEach { bbox ->
+            val objectCenterX = (bbox.x1 + bbox.x2) / 2
+            val objectCenterY = (bbox.y1 + bbox.y2) / 2
+            val objectId = bbox.id ?: return@forEach
+
+            previousPositions[objectId]?.let { previousCenter ->
+                val previousCenterX = previousCenter.first
+                val previousCenterY = previousCenter.second
+
+                when (selectedDirection) {
+                    Direction.LEFT_TO_RIGHT -> {
+                        if (previousCenterX < countingLinePosition && objectCenterX >= countingLinePosition) {
+                            count++
+                        }
+                    }
+                    Direction.RIGHT_TO_LEFT -> {
+                        if (previousCenterX > countingLinePosition && objectCenterX <= countingLinePosition) {
+                            count++
+                        }
+                    }
+                    Direction.TOP_TO_BOTTOM -> {
+                        if (previousCenterY < countingLinePosition && objectCenterY >= countingLinePosition) {
+                            count++
+                        }
+                    }
+                    Direction.BOTTOM_TO_TOP -> {
+                        if (previousCenterY > countingLinePosition && objectCenterY <= countingLinePosition) {
+                            count++
+                        }
+                    }
+                }
+            }
+
+            previousPositions[objectId] = Pair(objectCenterX, objectCenterY)
+        }
+
+        detectorListener.onDetect(bestBoxes, inferenceTime, count)
     }
 
-    private fun bestBox(array: FloatArray) : List<BoundingBox> {
+    private fun bestBox(array: FloatArray): List<BoundingBox> {
+        val validClasses = setOf("person", "bicycle", "car", "motorcycle", "bus", "truck")
+
         val boundingBoxes = mutableListOf<BoundingBox>()
         for (r in 0 until numElements) {
             val cnf = array[r * numChannel + 4]
@@ -143,20 +184,32 @@ class Detector(
                 val y2 = array[r * numChannel + 3]
                 val cls = array[r * numChannel + 5].toInt()
                 val clsName = labels[cls]
-                boundingBoxes.add(
-                    BoundingBox(
-                        x1 = x1, y1 = y1, x2 = x2, y2 = y2,
-                        cnf = cnf, cls = cls, clsName = clsName
+                if (clsName in validClasses) {
+                    boundingBoxes.add(
+                        BoundingBox(
+                            x1 = x1, y1 = y1, x2 = x2, y2 = y2,
+                            cnf = cnf, cls = cls, clsName = clsName
+                        )
                     )
-                )
+
+                }
             }
         }
         return boundingBoxes
     }
 
+    fun getCount(): Int = count // ✅ Returns only the selected direction count
+
+    fun setCountingLine(position: Float, vertical: Boolean, direction: Direction) {
+        countingLinePosition = position
+        isVertical = vertical
+        selectedDirection = direction // ✅ Updates selected direction
+        count = 0 // ✅ Resets count when changing direction
+    }
+
     interface DetectorListener {
         fun onEmptyDetect()
-        fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long)
+        fun onDetect(boundingBoxes: List<BoundingBox>, inferenceTime: Long, count: Int)
     }
 
     companion object {
@@ -166,4 +219,11 @@ class Detector(
         private val OUTPUT_IMAGE_TYPE = DataType.FLOAT32
         private const val CONFIDENCE_THRESHOLD = 0.3F
     }
+}
+
+enum class Direction {
+    LEFT_TO_RIGHT,
+    RIGHT_TO_LEFT,
+    TOP_TO_BOTTOM,
+    BOTTOM_TO_TOP
 }
