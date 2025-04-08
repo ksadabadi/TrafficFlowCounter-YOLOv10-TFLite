@@ -1,7 +1,7 @@
 package com.example.yololitertobjectdetection
 
-import android.content.Intent
 import android.os.Bundle
+import android.os.StrictMode
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -10,18 +10,18 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.navOptions
 import com.example.yololitertobjectdetection.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         enableEdgeToEdge()
-
         setContentView(binding.root)
         setStatusBarColor(R.color.primary)
 
@@ -30,18 +30,35 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+
+        // ✅ Get selected direction from CountOptionsActivity
+        val selectedDirection = intent.getStringExtra("DIRECTION") ?: "LEFT_TO_RIGHT"
+        val bundle = Bundle().apply {
+            putString("DIRECTION", selectedDirection)
+        }
+        navController.navigate(R.id.cameraFragment, bundle)
+        // ✅ Pass argument to CameraFragment in navGraph
+
+        StrictMode.setThreadPolicy(
+            StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build()
+        )
+        StrictMode.setVmPolicy(
+            StrictMode.VmPolicy.Builder()
+                .detectLeakedClosableObjects()
+                .detectLeakedSqlLiteObjects()
+                .penaltyLog()
+                .build()
+        )
     }
 
     private fun setStatusBarColor(color: Int) {
         window?.statusBarColor = ContextCompat.getColor(baseContext, color)
         WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = false
-    }
-
-    private fun openCountOptionsActivity() {
-        // Intent to navigate to CountOptionsActivity
-        val intent = Intent(this, CountOptionsActivity::class.java)
-        startActivity(intent)
     }
 }

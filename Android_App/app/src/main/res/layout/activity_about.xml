@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Centre for Advanced Transportion Technology(CATT)"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:paddingBottom="16dp"/>
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/descriptionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:lineSpacingExtra="6dp"
+            android:text="This app uses YOLO v10n, a real-time object detection model capable of detecting cars, trucks, bikes, and pedestrians.
+
+Depending on the selected direction, it counts the number of objects crossing a defined line.
+
+- **YOLO v10n (You Only Look Once)**: Performs object detection in a single forward pass of the neural network, making it fast and efficient.
+- **SORT Algorithm (Simple Online and Realtime Tracker)**: Used for object tracking by associating detected objects between frames.
+- **Hungarian Algorithm**: Assigns objects between consecutive frames to maintain tracking accuracy.
+- **Kalman Filter**: Predicts the motion of detected objects, making tracking more robust to occlusions and noise."
+
+            android:justificationMode="inter_word"/>
+
+        <!-- Website Link -->
+        <TextView
+            android:id="@+id/txtLink"
+            android:layout_width="wrap_content"
+            android:layout_height="93dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingTop="20dp"
+            android:text="Visit Centre for Advanced Transport and Technology"
+            android:textColor="@color/blue"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>
