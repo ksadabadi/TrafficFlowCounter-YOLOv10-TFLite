@@ -269,7 +269,8 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
         }
     }
     private fun showCountPopup() {
-        val finalCount = objectCount
+        val finalCount = binding.overlay.getCount()
+        val classBreakdown = binding.overlay.getDetailedCounts()
         val filename = "${startTime.replace(":", "-")}_${startDate}.txt"
         val fileContent = buildString {
             append("Location: $location\n")
@@ -278,7 +279,7 @@ class CameraFragment : Fragment(), Detector.DetectorListener {
             append("Stop Time: $stopTime\n\n")
             append("Total Counted Objects: $finalCount\n\n")
             append("Detailed Breakdown:\n")
-            for ((cls, count) in classCounts) {
+            for ((cls, count) in classBreakdown) {
                 append("$cls: $count\n")
             }
         }
